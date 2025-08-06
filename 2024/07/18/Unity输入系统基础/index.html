@@ -1,0 +1,537 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Unity输入系统基础 | Ank_Blogging</title><meta name="author" content="Ank"><meta name="copyright" content="Ank"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="输入Unity 的输入系统是用于处理用户输入的核心模块，它使开发者能够捕获和响应来自键盘、鼠标、触摸屏、游戏手柄等各种输入设备的输入事件。Unity 的输入系统经历了几个重大版本的演变，目前主要有两种输入系统：经典输入系统和新的输入系统（Input System package）。 经典输入系统经典输入系统是 Unity 早期版本中内置的输入系统，它通过一系列的公共变量和函数来提供输入处理。这些变">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unity输入系统基础">
+<meta property="og:url" content="http://example.com/2024/07/18/Unity%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/index.html">
+<meta property="og:site_name" content="Ank_Blogging">
+<meta property="og:description" content="输入Unity 的输入系统是用于处理用户输入的核心模块，它使开发者能够捕获和响应来自键盘、鼠标、触摸屏、游戏手柄等各种输入设备的输入事件。Unity 的输入系统经历了几个重大版本的演变，目前主要有两种输入系统：经典输入系统和新的输入系统（Input System package）。 经典输入系统经典输入系统是 Unity 早期版本中内置的输入系统，它通过一系列的公共变量和函数来提供输入处理。这些变">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2024-07-18T01:27:44.000Z">
+<meta property="article:modified_time" content="2025-05-16T02:31:04.000Z">
+<meta property="article:author" content="Ank">
+<meta property="article:tag" content="unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Unity输入系统基础",
+  "url": "http://example.com/2024/07/18/Unity%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/",
+  "image": "http://example.com/img/butterfly-icon.png",
+  "datePublished": "2024-07-18T01:27:44.000Z",
+  "dateModified": "2025-05-16T02:31:04.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Ank",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/07/18/Unity%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Unity输入系统基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.2.0"><link rel="alternate" href="/atom.xml" title="Ank_Blogging" type="application/atom+xml">
+</head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Ank_Blogging</span></a><a class="nav-page-title" href="/"><span class="site-name">Unity输入系统基础</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Unity输入系统基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-18T01:27:44.000Z" title="发表于 2024-07-18 09:27:44">2024-07-18</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-16T02:31:04.000Z" title="更新于 2025-05-16 10:31:04">2025-05-16</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/unity%E5%9F%BA%E7%A1%80/">unity基础</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h1 id="输入"><a href="#输入" class="headerlink" title="输入"></a>输入</h1><p>Unity 的输入系统是用于处理用户输入的核心模块，它使开发者能够捕获和响应来自键盘、鼠标、触摸屏、游戏手柄等各种输入设备的输入事件。Unity 的输入系统经历了几个重大版本的演变，目前主要有两种输入系统：经典输入系统和新的输入系统（Input System package）。</p>
+<h2 id="经典输入系统"><a href="#经典输入系统" class="headerlink" title="经典输入系统"></a>经典输入系统</h2><p>经典输入系统是 Unity 早期版本中内置的输入系统，它通过一系列的公共变量和函数来提供输入处理。这些变量和函数可以在脚本中直接使用，例如：</p>
+<ul>
+<li>Input.GetAxis：获取轴的值，常用于处理模拟输入，如游戏手柄的摇杆或键盘的方向键。</li>
+<li>Input.GetButton：检查按钮是否被按下，适用于数字输入，如键盘按键或手柄按钮。</li>
+<li>Input.GetMouseButton 和 Input.GetMouseButtonDown：分别用于检测鼠标按钮是否被按下或是否被按下了一帧。</li>
+<li>Input.mousePosition：获取鼠标的屏幕坐标。</li>
+<li>Input.touchCount 和 Input.GetTouch：用于处理触摸屏输入。</li>
+</ul>
+<p>经典输入系统的优点是简单易用，但是它的功能相对有限，对于复杂的输入处理和跨平台的支持不够灵活。</p>
+<h2 id="新的输入系统（Input-System-package）"><a href="#新的输入系统（Input-System-package）" class="headerlink" title="新的输入系统（Input System package）"></a>新的输入系统（Input System package）</h2><p>新的输入系统是一个独立的 Unity Package，提供了更强大和灵活的输入处理能力。它允许开发者定义自定义的输入动作、绑定和处理程序，可以更精细地控制输入行为。新输入系统的主要特点包括：</p>
+<ul>
+<li>可配置性：输入动作和绑定可以在编辑器中通过图形界面配置，无需编写代码。</li>
+<li>跨平台支持：提供了广泛的设备和平台支持，可以很容易地处理不同设备和平台的输入差异。</li>
+<li>高级功能：支持复合输入、延迟输入处理、输入过滤和变换等高级功能。</li>
+<li>脚本控制：提供了丰富的 API，允许开发者在脚本中控制输入行为，如监听特定的输入事件、调整输入映射等。</li>
+</ul>
+<p>新输入系统的核心概念包括：</p>
+<ul>
+<li>Input Actions：表示一个具体的输入事件，如跳跃或射击。</li>
+<li>Input Bindings：定义了如何从硬件输入（如按键、触控点）映射到 Input Actions。</li>
+<li>Input Controls：代表了具体的硬件输入源，如键盘上的某个键、手柄的某个按钮。</li>
+</ul>
+<p>新输入系统的设计目的是为了提供更现代化、更灵活的输入处理框架，以适应各种游戏和应用的需求，尤其是在处理复杂的输入场景和跨平台开发时。</p>
+<h1 id="鼠标输入"><a href="#鼠标输入" class="headerlink" title="鼠标输入"></a>鼠标输入</h1><p>在 Unity 中，鼠标输入主要包括以下几种类型：</p>
+<h2 id="鼠标按钮"><a href="#鼠标按钮" class="headerlink" title="鼠标按钮"></a>鼠标按钮</h2><ul>
+<li>GetMouseButtonDown(int button): 检测鼠标按钮是否刚刚按下。</li>
+<li>GetMouseButton(int button): 检测鼠标按钮是否被按下。</li>
+<li>GetMouseButtonUp(int button): 检测鼠标按钮是否刚刚释放。</li>
+</ul>
+<p>其中 button 参数可以是 0（左键）、1（右键）、2（中间键），或者更高的数值，具体取决于鼠标有多少个额外的按钮。一般在 Update 函数中每帧对按键进行检测</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">  &#123;</span><br><span class="line">      <span class="keyword">if</span>(Input.GetMouseButton(<span class="number">0</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          Debug.Log(<span class="string">&quot;GetMouseButton&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span>(Input.GetMouseButtonDown(<span class="number">0</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          Debug.Log(<span class="string">&quot;Down&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span>(Input.GetMouseButtonUp(<span class="number">0</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          Debug.Log(<span class="string">&quot;Up&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>鼠标左键点击一次屏幕,控制台输出<br><img src="/../img/UnityInputSystemBlog/MouseInput/GetMouseButton.png" alt="GetMouseButton"></p>
+<h2 id="鼠标位置"><a href="#鼠标位置" class="headerlink" title="鼠标位置"></a>鼠标位置</h2><ul>
+<li>mousePosition: 返回鼠标在屏幕坐标系中的位置，左下角为(0,0)，右上角为(Screen.width, Screen.height)。</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">if</span>(Input.GetMouseButtonDown(<span class="number">1</span>))</span><br><span class="line">      &#123;</span><br><span class="line">          Debug.Log(Input.mousePosition);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>屏幕中点击鼠标右键,控制台输出<br><img src="/../img/UnityInputSystemBlog/MouseInput/MousePosition.png" alt="MousePosition"></p>
+<h2 id="鼠标滚动"><a href="#鼠标滚动" class="headerlink" title="鼠标滚动"></a>鼠标滚动</h2><ul>
+<li>GetAxis(“Mouse ScrollWheel”): 获取鼠标滚轮的滚动量，正数表示向上滚动，负数表示向下滚动。</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="built_in">float</span> mouseScrollWheel = Input.GetAxis(<span class="string">&quot;Mouse ScrollWheel&quot;</span>);</span><br><span class="line">Debug.Log(mouseScrollWheel);</span><br></pre></td></tr></table></figure>
+
+<p>在窗口中滚动鼠标滚轮,控制台输出<br><img src="/../img/UnityInputSystemBlog/MouseInput/ScrollWheel.png" alt="ScrollWheel"></p>
+<h2 id="鼠标移动"><a href="#鼠标移动" class="headerlink" title="鼠标移动"></a>鼠标移动</h2><ul>
+<li>GetAxis(“Mouse X”) 和 GetAxis(“Mouse Y”): 分别返回鼠标水平和垂直方向上的移动量。</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span>&#123;</span><br><span class="line">  <span class="built_in">float</span> mouseX = Input.GetAxis(<span class="string">&quot;Mouse X&quot;</span>);</span><br><span class="line">  <span class="built_in">float</span> mouseY = Input.GetAxis(<span class="string">&quot;Mouse Y&quot;</span>);</span><br><span class="line">  Debug.Log(<span class="string">&quot;X:&quot;</span> + mouseX + <span class="string">&quot;  Y:&quot;</span> + mouseY);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>移动鼠标，控制台输出<br><img src="/../img/UnityInputSystemBlog/MouseInput/MouseXY.png" alt="MouseXY"></p>
+<h2 id="鼠标事件"><a href="#鼠标事件" class="headerlink" title="鼠标事件"></a>鼠标事件</h2><p>对于 UI 元素，Unity 的 EventSystem 提供了对鼠标<a target="_blank" rel="noopener" href="https://docs.unity3d.com/cn/2023.2/Manual/SupportedEvents.html">事件的支持</a>.</p>
+<ul>
+<li>IPointerEnterHandler - OnPointerEnter - 当指针进入对象时调用</li>
+<li>IPointerExitHandler - OnPointerExit - 当指针退出对象时调用</li>
+<li>IPointerDownHandler - OnPointerDown - 在对象上按下指针时调用</li>
+<li>IPointerUpHandler - OnPointerUp - 松开指针时调用（在指针正在点-击的游戏对象上调用）</li>
+<li>IPointerClickHandler - OnPointerClick - 在同一对象上按下再松开指针时调用</li>
+<li>IBeginDragHandler - OnBeginDrag - 即将开始拖动时在拖动对象上调用</li>
+<li>IDragHandler - OnDrag - 发生拖动时在拖动对象上调用</li>
+<li>IEndDragHandler - OnEndDrag - 拖动完成时在拖动对象上调用</li>
+</ul>
+<p>对于非 UI 元素，可以使用物理碰撞和射线投射技术来检测鼠标与 3D 世界中的物体的交互。<br>常用 API 有:</p>
+<ul>
+<li>OnMouseDown 在物体上按下鼠标</li>
+<li>OnMouseUp 在物体上抬起鼠标</li>
+<li>OnMouseDrag 在物体上拖动鼠标,每帧调用</li>
+<li>OnMouseEnter 鼠标进入物体</li>
+<li>OnMouseExit 鼠标移出物体</li>
+<li>OnMouseOver 鼠标位于物体上,每帧调用</li>
+</ul>
+<h1 id="键盘输入"><a href="#键盘输入" class="headerlink" title="键盘输入"></a>键盘输入</h1><p>在 Unity 中，键盘输入是游戏和应用程序中常见的用户交互方式之一。Unity 提供了多种方法来读取和处理键盘输入，这些方法可以分为两大类：基于事件的输入和基于轴的输入。</p>
+<h2 id="基于事件的输入"><a href="#基于事件的输入" class="headerlink" title="基于事件的输入"></a>基于事件的输入</h2><p>基于事件的输入用于检测键盘上的按键状态，主要包括以下几种方法：</p>
+<ul>
+<li>GetKey：检测按键是否一直被按下。</li>
+<li>GetKeyDown：检测按键是否在当前帧首次按下。</li>
+<li>GetKeyUp：检测按键是否在当前帧首次释放。</li>
+</ul>
+<p>这些方法接受一个字符或按键名称作为参数，返回一个布尔值，表示按键的状态。如：</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">if</span>(Input.GetKey(KeyCode.A))</span><br><span class="line">   &#123;</span><br><span class="line">     Debug.Log(<span class="string">&quot;A&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span>(Input.GetKeyDown(KeyCode.A))</span><br><span class="line">   &#123;</span><br><span class="line">     Debug.Log(<span class="string">&quot;Down&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">if</span>(Input.GetKeyUp(KeyCode.A))</span><br><span class="line">   &#123;</span><br><span class="line">     Debug.Log(<span class="string">&quot;UP&quot;</span>);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>点击一次 A 键,控制台输出<br><img src="/../img/UnityInputSystemBlog/KeyboardInput/GetKeyLog.png" alt="GetKey"></p>
+<p>还有三个 API 用于事件输入</p>
+<ul>
+<li>GetButton</li>
+<li>GetButtonDown</li>
+<li>GetButtonUp</li>
+</ul>
+<p>这三个 API 的用法和之前的基本一样，只是传入的参数只能是 InputManager 中定义的轴键。以 InputManager 自带的 jump 为例:<br><img src="/../img/UnityInputSystemBlog/KeyboardInput/JumpButton.png" alt="JumpButton"><br>代码格式:</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(Input.GetButtonDown(<span class="string">&quot;Jump&quot;</span>))</span><br><span class="line">&#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;Jump&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行时按 InputManager 中设置的 space(空格键),控制台输出:<br><img src="/../img/UnityInputSystemBlog/KeyboardInput/JumpLog.png" alt="JumpLog"><br>如果传入的 Button Name 在 InputManager 中没有注册,运行游戏时会报错</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (Input.GetButtonDown(<span class="string">&quot;space&quot;</span>))</span><br><span class="line">   &#123;</span><br><span class="line">       Debug.Log(<span class="string">&quot;space&quot;</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>错误信息:<br><img src="/../img/UnityInputSystemBlog/KeyboardInput/ErrorLog.png" alt="ErrorLog"></p>
+<h2 id="基于轴的输入"><a href="#基于轴的输入" class="headerlink" title="基于轴的输入"></a>基于轴的输入</h2><p>基于轴的输入用于处理类似游戏手柄的模拟输入，但也可以用于键盘。Unity 为常用的键盘方向键定义了轴，例如：</p>
+<ul>
+<li>Horizontal：处理左右方向键或 A&#x2F;D 键。</li>
+<li>Vertical：处理上下方向键或 W&#x2F;S 键。</li>
+</ul>
+<p>这些轴的值范围一般在-1 到 1 之间，其中-1 表示按键完全向左或向下，1 表示完全向右或向上。</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="built_in">float</span> horizontal = Input.GetAxis(<span class="string">&quot;Horizontal&quot;</span>);</span><br><span class="line"><span class="built_in">float</span> vertical = Input.GetAxis(<span class="string">&quot;Vertical&quot;</span>);</span><br><span class="line">Debug.Log(<span class="string">&quot;h = &quot;</span> + horizontal + <span class="string">&quot;,v = &quot;</span> + vertical);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../img/UnityInputSystemBlog/KeyboardInput/GetAxis.png" alt="GetAxis"></p>
+<h1 id="Touch-输入"><a href="#Touch-输入" class="headerlink" title="Touch 输入"></a>Touch 输入</h1><p>在 Unity 中，处理触摸输入对于开发移动平台（如 iOS 和 Android）的游戏和应用程序至关重要。Unity 提供了对多点触摸的支持，允许你检测和响应来自触摸屏的输入事件。触摸输入在 Unity 中主要通过 Input.touches 数组来访问，这个数组包含了所有当前正在触摸屏幕的手指的信息。</p>
+<h2 id="Input-touches-数组"><a href="#Input-touches-数组" class="headerlink" title="Input.touches 数组"></a>Input.touches 数组</h2><p>Input.touches 是一个 Touch 类型的数组，包含了所有正在触摸屏幕的手指信息。每个 Touch 对象都有以下属性和方法：</p>
+<ul>
+<li>fingerId: 触摸的唯一索引。</li>
+<li>position：手指在屏幕上的位置（以像素为单位）。</li>
+<li>deltaPosition：自上次帧以来手指移动的距离。</li>
+<li>tapCount：连续的点击次数，对于快速多次点击同一位置的情况。</li>
+<li>phase：触摸事件的阶段，可以是 Began（开始）、Moved（移动）、Stationary（静止）、Ended（结束）或 Cancelled（取消）。</li>
+</ul>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">if</span>(Input.touchCount&gt;<span class="number">0</span>)</span><br><span class="line">      <span class="keyword">foreach</span> (<span class="keyword">var</span> touch <span class="keyword">in</span> Input.touches)</span><br><span class="line">      &#123;</span><br><span class="line">            <span class="keyword">if</span> (touch.phase == TouchPhase.Began)</span><br><span class="line">               print(touch.position);</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用打包工具将场景打包成 Apk,勾选调试选项</p>
+<p><img src="/../img/UnityInputSystemBlog/TouchInput/Build.png" alt="Build"></p>
+<p>在手机上运行程序,看到 Unity 控制台显示监听信息,然后点击手机屏幕,控制台输出</p>
+<p><img src="/../img/UnityInputSystemBlog/TouchInput/TouchCount.png" alt="TouchCount"></p>
+<h2 id="使用-Touch-输入拖动物体"><a href="#使用-Touch-输入拖动物体" class="headerlink" title="使用 Touch 输入拖动物体"></a>使用 Touch 输入拖动物体</h2><figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">if</span>(Input.touchCount&gt;<span class="number">0</span>)</span><br><span class="line">      <span class="keyword">foreach</span> (<span class="keyword">var</span> touch <span class="keyword">in</span> Input.touches)</span><br><span class="line">      &#123;</span><br><span class="line">            <span class="keyword">if</span> (touch.phase == TouchPhase.Moved)</span><br><span class="line">            &#123;</span><br><span class="line">               Vector3 touchPos = touch.position;</span><br><span class="line">               touchPos.z = Camera.main.WorldToScreenPoint(transform.position).z;</span><br><span class="line">               Vector3 pos = Camera.main.ScreenToWorldPoint(touchPos);</span><br><span class="line">               transform.position = pos;</span><br><span class="line">            &#125;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="鼠标事件模拟单个-touch"><a href="#鼠标事件模拟单个-touch" class="headerlink" title="鼠标事件模拟单个 touch"></a>鼠标事件模拟单个 touch</h2><p>鼠标事件也可以用来模拟单个 touch 输入,在脚本中的 Input.mousePosition 也是单个手指点击的位置,所以 Unity 提供的鼠标事件也可以用来模拟输入,API:</p>
+<ul>
+<li>OnMouseDown 在物体上按下鼠标</li>
+<li>OnMouseUp 在物体上抬起鼠标</li>
+<li>OnMouseDrag 在物体上拖动鼠标,每帧调用</li>
+<li>OnMouseEnter 鼠标进入物体</li>
+<li>OnMouseExit 鼠标移出物体</li>
+<li>OnMouseOver 鼠标位于物体上,每帧调用</li>
+</ul>
+<p>所以拖动物体可以用以下方法,而且无论在编辑器下还是打包到手机都可以触发事件</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnMouseDrag</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">   Vector3 mousePos = Input.mousePosition;<span class="comment">//或者检测touch获取touch.position</span></span><br><span class="line">   mousePos.z = Camera.main.WorldToScreenPoint(transform.position).z;</span><br><span class="line">   Vector3 pos = Camera.main.ScreenToWorldPoint(mousePos);</span><br><span class="line">   transform.position = pos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是 GetMouseButtonDown 等方法就模拟不了手机输入,也就是方法不会在点击屏幕时触发</p>
+<h2 id="触摸事件和鼠标事件对比"><a href="#触摸事件和鼠标事件对比" class="headerlink" title="触摸事件和鼠标事件对比"></a>触摸事件和鼠标事件对比</h2><p>在 Unity 中，处理触摸事件（Touch Events）、鼠标事件（Mouse Events）有着不同的应用场景和特性，它们分别针对不同的输入设备和用户交互方式。下面是对其的对比：</p>
+<p>触摸事件（Touch Events）</p>
+<ul>
+<li>适用平台：主要针对移动设备（如智能手机和平板电脑）和触摸屏。</li>
+<li>输入设备：触摸屏。</li>
+<li>事件类型：通过 Input.touches 数组获取，包含了 Touch 对象，每个对象描述了一个触摸点的状态。</li>
+<li>多点触摸：支持同时处理多个触摸点，适用于手势识别，如捏合缩放、多指滑动等。</li>
+</ul>
+<p>鼠标事件（Mouse Events）</p>
+<ul>
+<li>适用平台：桌面操作系统，如 Windows、macOS。</li>
+<li>输入设备：鼠标。</li>
+<li>事件类型：鼠标事件（例如“OnMouseDown”、“OnMouseDrag”和“OnMouseUp”）是 Unity 的内置事件函数，用于处理 Unity 编辑器内以及某些情况下独立应用程序中的鼠标交互。这些事件与具有 Collider 组件的游戏对象相关联，通常用于 Unity 编辑器中的测试和开发目的。</li>
+<li>单点定位：相对于触摸事件，鼠标事件通常涉及单一输入点，即鼠标的位置。</li>
+</ul>
+<p>在实际开发中，选择使用哪一种输入事件处理方式，主要取决于你的目标平台、游戏类型和用户交互设计。例如，对于一款移动平台的跑酷游戏，你可能主要依赖触摸事件来处理玩家的滑动和轻触操作；而对于一款桌面平台的策略游戏，你可能更多地使用鼠标事件来处理选择和拖拽操作。</p>
+<h1 id="陀螺仪输入"><a href="#陀螺仪输入" class="headerlink" title="陀螺仪输入"></a>陀螺仪输入</h1><p>Unity 中的陀螺仪输入主要用于处理来自带有陀螺仪传感器的设备的运动数据，如智能手机和平板电脑。陀螺仪传感器能够测量设备绕三个轴的角速度，这对于实现基于运动的控制和增强现实（AR）应用非常有用。在 Unity 中，陀螺仪输入可以通过 Input.gyro 属性来访问。</p>
+<h2 id="Input-gyro-属性"><a href="#Input-gyro-属性" class="headerlink" title="Input.gyro 属性"></a>Input.gyro 属性</h2><p>Input.gyro 是一个 Gyroscope 类型的对象，提供了以下主要属性和方法：</p>
+<ul>
+<li>enabled: 设置或检索该陀螺仪的启用状态。</li>
+<li>attitude: 返回设备的姿态（即在空间中的方向）。</li>
+<li>rotationRate: 类似于 angularVelocity，但表示的是旋转速率，通常用于 AR 应用。</li>
+<li>rotationRateUnbiased: 与 rotationRate 类似，但去除了偏置，更准确地反映了实际的旋转速率。</li>
+<li>updateInterval: 返回或设置陀螺仪数据的更新间隔，单位为秒。</li>
+<li>userAcceleration: 返回用户给予设备的加速度。</li>
+</ul>
+<h2 id="检查设备支持"><a href="#检查设备支持" class="headerlink" title="检查设备支持"></a>检查设备支持</h2><p>首先，你需要检查设备是否支持陀螺仪功能。</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Start</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (SystemInfo.supportsGyroscope)</span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Gyroscope is supported.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        Debug.Log(<span class="string">&quot;Gyroscope is not supported.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="启用陀螺仪"><a href="#启用陀螺仪" class="headerlink" title="启用陀螺仪"></a>启用陀螺仪</h2><p>在开始读取陀螺仪数据之前，必须先启用它</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (Input.gyro != <span class="literal">null</span> &amp;&amp; !Input.gyro.enabled)</span><br><span class="line">&#123;</span><br><span class="line">    Input.gyro.enabled = <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取陀螺仪数据"><a href="#获取陀螺仪数据" class="headerlink" title="获取陀螺仪数据"></a>获取陀螺仪数据</h2><p>一旦陀螺仪被启用，可以通过以下方式获取数据：</p>
+<p>旋转速率：Input.gyro.rotationRate, 返回一个 Vector3，表示设备在 X、Y、Z 轴上的角速度。<br>未校正的旋转速度：Input.gyro.rotationRateUnbiased,这将不考虑任何偏移或校准。<br>姿态：Input.gyro.attitude，这是一个 Quaternion，代表了设备相对于世界坐标系的姿态。</p>
+<h2 id="更新频率"><a href="#更新频率" class="headerlink" title="更新频率"></a>更新频率</h2><p>陀螺仪的更新频率可能会影响性能和精度。可以通过 Input.gyro.updateInterval 属性来设置更新间隔（以秒为单位），默认值通常是 0.02 秒。</p>
+<h2 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h2><p>通过陀螺仪实现旋转手机移动相机视角</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FixedUpdate</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">   <span class="keyword">if</span> (Input.gyro.enabled)</span><br><span class="line">   &#123;</span><br><span class="line">      <span class="comment">//1.使用attitude,效果不好,没优化</span></span><br><span class="line">      <span class="comment">// Quaternion gyroData = Input.gyro.attitude;</span></span><br><span class="line">      <span class="comment">// Quaternion gyroQuaternion =Quaternion.Euler( gyroData.eulerAngles );</span></span><br><span class="line">      <span class="comment">// trs.rotation = new Quaternion( -gyroQuaternion.x,-gyroQuaternion.y,gyroQuaternion.z,gyroQuaternion.w);</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">//2.使用rotationRate</span></span><br><span class="line">      <span class="built_in">float</span> rotSpeed = <span class="number">10</span>;</span><br><span class="line">      Vector3 gyroRot = Input.gyro.rotationRate;</span><br><span class="line">      trs.transform.rotation = Quaternion.Euler(<span class="keyword">new</span> Vector3(-gyroRot.x,-gyroRot.y, gyroRot.z)*Time.deltaTime*rotSpeed +trs.rotation.eulerAngles);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意，陀螺仪数据可能会受到漂移的影响，因此在长时间运行的应用中，可能需要实现一些校准机制来处理这种问题。此外，陀螺仪的使用也会增加电池消耗，所以优化和测试是非常重要的。</p>
+<h1 id="EasyTouch"><a href="#EasyTouch" class="headerlink" title="EasyTouch"></a>EasyTouch</h1><p>EasyTouch 是一个非常流行且功能丰富的 Unity 插件，主要用于处理触摸和手势输入，特别适合于移动平台的游戏开发。它提供了高度定制化的触摸输入处理，使得开发者可以轻松地在游戏内实现各种触摸操作，如点击、滑动、双击、长按、缩放、旋转等。</p>
+<h2 id="EasyTouch-的特点"><a href="#EasyTouch-的特点" class="headerlink" title="EasyTouch 的特点"></a>EasyTouch 的特点</h2><ol>
+<li>广泛的触摸事件支持：EasyTouch 支持多种触摸事件，包括但不限于点击、长按、拖动、双击、多点触摸、缩放、旋转等。</li>
+<li>虚拟控制器：它允许创建虚拟按钮、摇杆和其他控制元件，这些元件可以在屏幕上任意位置放置，非常适合需要复杂控制方案的游戏。</li>
+<li>手势识别：EasyTouch 具有智能的手势识别功能，可以识别复杂的用户输入，如滑动手势的方向和速度，这在许多游戏中是必不可少的。</li>
+<li>事件系统：插件内置了一套事件系统，可以方便地将触摸事件与游戏逻辑连接起来，无需复杂的编程。</li>
+<li>自定义和可扩展：EasyTouch 允许开发者自定义和扩展其功能，可以添加自己的触摸事件处理器，以适应特定的游戏需求。</li>
+<li>编辑器工具：它提供了一个强大的编辑器工具，可以直观地配置触摸事件和虚拟控制器，减少代码工作量。</li>
+<li>性能优化：EasyTouch 设计时考虑了性能，确保即使在高负载下也能保持良好的响应性和游戏流畅度。</li>
+</ol>
+<h2 id="使用-EasyTouch-的基本步骤"><a href="#使用-EasyTouch-的基本步骤" class="headerlink" title="使用 EasyTouch 的基本步骤"></a>使用 EasyTouch 的基本步骤</h2><ol>
+<li>导入插件：从 Unity Asset Store 下载并导入 EasyTouch 插件到 Unity 项目中。</li>
+<li>创建 EasyTouch 控件：在场景中创建一个 EasyTouch 控件,里面可以对 EasyTouch 的参数进行设置<br><img src="/../img/UnityInputSystemBlog/EasyTouch/ImprotEasyTouch.png" alt="ImportEasyTouch"></li>
+<li>配置触摸事件：EasyTouch 提供多种使用方式包括使用脚本 API,使用 Quick Component 以及使用 EasyTouch Control</li>
+<li>编写脚本：在游戏对象的脚本中，你可以订阅 EasyTouch Manager 发布的事件，从而根据不同的触摸事件执行相应的游戏逻辑。</li>
+<li>测试和调试：使用 Unity 编辑器或在目标设备上测试触摸事件，确保一切按预期工作。</li>
+</ol>
+<h2 id="Easy-Touch-Script-组件"><a href="#Easy-Touch-Script-组件" class="headerlink" title="Easy Touch(Script) 组件"></a>Easy Touch(Script) 组件</h2><p>创建的 Easy Touch 带有一个同名的组件,结构如下：<br><img src="/../img/UnityInputSystemBlog/EasyTouch/EasyTouchCom.png" alt="EasyTouchCom"></p>
+<ul>
+<li>Enable Easy Touch : 是否启用 EasyTouch</li>
+<li>Enable Unity Remote : 是否启用 UnityRemote</li>
+</ul>
+<h3 id="GUI-compatibility"><a href="#GUI-compatibility" class="headerlink" title="GUI compatibility"></a>GUI compatibility</h3><p>GUI Compatibility（GUI 兼容性）设置是为了确保 EasyTouch 与 Unity 的旧版 GUI 系统（不是 UGUI，即 Unity 的 User Interface 系统）兼容。在 Unity 早期版本中，GUI 系统是用于创建用户界面的主要方式，但后来被新的 UGUI 系统所取代。当启用此选项时，EasyTouch 会在 GUI 事件发生时禁用手势识别，以防止与 GUI 控件的交互冲突。这是因为旧的 GUI 系统使用鼠标事件，而 EasyTouch 则使用自己的事件系统，两者之间可能存在冲突。<br><img src="/../img/UnityInputSystemBlog/EasyTouch/GUI%20com.png" alt="GUIcom"></p>
+<ul>
+<li>Enable Unity UI detection：是否启用 UI 检测，取消勾选 EasyTouch 就取消对 UI 的控制</li>
+<li>Unity UI Compatibility：与 UGUI 的兼容性</li>
+<li>Auto update picked Unity UI：是否每一帧都检测 touch 下的物体是否符合要求。(比如滑动,如果滑动出了物体,指针下就没有 picked object 就会结束执行)</li>
+</ul>
+<p><strong>示例:</strong></p>
+<p>新建两个 Image</p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/GUIcom2.png" alt="GUIcom2"></p>
+<p>在红色 UI 上挂载脚本如下:</p>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">UICom</span>: <span class="title">MonoBehaviour</span>, <span class="title">IDragHandler</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">OnDrag</span>(<span class="params">PointerEventData eventData</span>)</span></span><br><span class="line">    &#123;</span><br><span class="line">        transform.position = Input.mousePosition;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在蓝色 UI 上新建组件 Quick Drag:</p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/GUIcom3.png" alt="GUIcom3"></p>
+<p>当关闭 Enable Unity UI detection 时蓝色的 image 拖动功能失效,启动该选项时无论 Unity UI compatibility 是否启用运行时都会将其禁用,然后蓝色 image 也可以实现拖动了</p>
+<h3 id="Automatic-selection"><a href="#Automatic-selection" class="headerlink" title="Automatic selection"></a>Automatic selection</h3><p>Automatic Selection（自动选择）是一个功能，用于自动检测屏幕上的可交互对象。当启用此选项时，EasyTouch 会尝试根据触摸位置自动选择最接近的 UI 元素或者游戏对象。这对于实现点击、拖动等交互非常有用，可以减少手动编写选择逻辑的工作量。</p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/Automatic%20selection.png" alt="Automatic selection"></p>
+<ul>
+<li>Enable auto-select：自动选择。开启时，可通过 EasyTouch 选择物体执行命令</li>
+<li>Picked Layers 3D：能够选取的层级</li>
+<li>Enable 2D collider：自动选择的 2D 层</li>
+<li>Add Camera：多相机的可选取。默认关联 MainCamera 。若添加某摄像机，位于其视口底下的物体也可被选取</li>
+</ul>
+<h3 id="General-gesture-properties"><a href="#General-gesture-properties" class="headerlink" title="General gesture properties"></a>General gesture properties</h3><p>General Gesture Properties（通用手势属性）包含了一系列影响所有手势类型的基础设置。这里可以设置一些全局的手势行为.</p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/General.png" alt="General"></p>
+<ul>
+<li>Priority to : 点击和滑动的优先级(主要针对比较模糊触碰)</li>
+<li>Stationary tolerance：静止精度，当手指在屏幕上时，如果滑动距离小于 15 即认为未滑动</li>
+<li>Long tap time：触发长按事件的最短间隔</li>
+<li>Double tap detection：双击事件触发的两次点击间隔，即点击两次时间间隔设置或者采用系统默认双击设置</li>
+<li>Swipe tolerance：滑动灵敏度</li>
+<li>always sent swipe event：即使误触（在灵敏度以下），也会发送事件</li>
+</ul>
+<h3 id="Two-fingers-gesture-properties、"><a href="#Two-fingers-gesture-properties、" class="headerlink" title="Two fingers gesture properties、"></a>Two fingers gesture properties、</h3><p>Two Fingers Gesture Properties（双指手势属性）专门针对需要两个手指的手势，如捏合（Pinch）、旋转（Rotate）和双指拖动（Two Finger Drag）。在这个部分，可以调整这些特定手势的参数</p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/Two%20fingers.png" alt="TwoFingers"></p>
+<ul>
+<li>Pick method：触发方式,Finger,只有两指都在物体上,才触发事件,Average 是当两指连线位于物体上，便会触发</li>
+<li>Enable swipe &amp; drag：是否允许滑动或拖拽</li>
+<li>Enable Pinch：是否允许缩放</li>
+<li>Enable twist：是否允许旋转</li>
+</ul>
+<h3 id="Second-finger-simulation"><a href="#Second-finger-simulation" class="headerlink" title="Second finger simulation"></a>Second finger simulation</h3><p>Second Finger Simulation（第二根手指模拟）是一个高级功能，允许在只有一根手指触摸屏幕的情况下模拟第二根手指的行为。这在某些情况下可能是有用的，比如正在测试需要两指操作的功能，但目前只有单指可用。通过这个设置，可以定义在单指触控时如何模拟第二根手指的位置和行为，以便于开发和调试。</p>
+<h2 id="三种使用方式"><a href="#三种使用方式" class="headerlink" title="三种使用方式"></a>三种使用方式</h2><h3 id="使用-API"><a href="#使用-API" class="headerlink" title="使用 API"></a>使用 API</h3><ol>
+<li>EasyTouch4.x,需要通过绑定事件的方式</li>
+</ol>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnEnable</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    EasyTouch.On_Drag += OnDrag;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDisable</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    EasyTouch.On_Drag -= OnDrag;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDestroy</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    EasyTouch.On_Drag -= OnDrag;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDrag</span>(<span class="params">Gesture gesture</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;OnDrag&quot;</span>+gesture.actionTime);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>EasyTouch5.x,不需要绑定事件,使用 Gesture 获取当前手指状态</li>
+</ol>
+<figure class="highlight c#"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">Update</span>()</span></span><br><span class="line">&#123;</span><br><span class="line">    Gesture curGesture = EasyTouch.current;</span><br><span class="line">    <span class="keyword">if</span>(curGesture!=<span class="literal">null</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        OpinionAction(curGesture);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OpinionAction</span>(<span class="params">Gesture gesture</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">switch</span> (gesture.type)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">case</span> EasyTouch.EvtType.On_TouchStart:</span><br><span class="line">            OnTouchStart(gesture);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> EasyTouch.EvtType.On_TouchUp:</span><br><span class="line">            OnTouchUp(gesture);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> EasyTouch.EvtType.On_Drag:</span><br><span class="line">            OnDrag(gesture);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">//更多状态</span></span><br><span class="line">        <span class="literal">default</span>:</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">OnDrag</span>(<span class="params">Gesture gesture</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    Debug.Log(<span class="string">&quot;OnDrag&quot;</span> + gesture.actionTime);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"><span class="doctag">///</span>其他方法</span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>其他常用 API</li>
+</ol>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/GetureVariables.png" alt="GestureVariables"></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/GestureFunc.png" alt="GesturesFunc"></p>
+<p>更多到包中的 EasyTouch.pdf 查看</p>
+<h3 id="Quick-Component"><a href="#Quick-Component" class="headerlink" title="Quick Component"></a>Quick Component</h3><ol>
+<li><p><strong>Quick Drag</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/QuickDrag.png" alt="QuickDrag"></p>
+<ul>
+<li>Allow on the axis：允许拖动的轴</li>
+<li>Allow pick over UI element：是否允许在 UI 元素底下拖拽</li>
+<li>Stop drag on collision enter：碰撞时停止拖拽</li>
+<li>Reset physics on drag: 拖拽时禁用刚体</li>
+</ul>
+</li>
+<li><p><strong>Quick Enter-Over-Exit</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/QuickEOE.png" alt="QuickEOE"></p>
+<ul>
+<li>Allow multi-touches：允许多指操作</li>
+</ul>
+</li>
+<li><p><strong>Quick LongTap</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/QuickLongTap.png" alt="QuickLongTap"></p>
+<ul>
+<li>2 fingers gesture：需要两个手指长按才能触发</li>
+<li>Action triggering: 触发事件的时机分别是(Start,In progress,End)</li>
+</ul>
+</li>
+<li><p><strong>Quick Pinch</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/QuickPinch.png" alt="QuickPinch"></p>
+<ul>
+<li>Gesture over me：手势必须位于具有 collider 的物体上(或者两个手指的连线在物体身上)</li>
+<li>Triggering： 触发时机,包括(In Progress,End)</li>
+<li>Pinch direction: 缩放方向,包括(All,Pinch In,Pinch Out)</li>
+<li>Enable simple action: 需要 Triggering 设置为 In Progress,用来设置双指实现的效果(缩放，移动，旋转)<ul>
+<li>Action : 控制行为</li>
+<li>Affected axes: 控制的轴向</li>
+<li>Sensibility: 灵敏度</li>
+<li>Inverse axis: 是否反转轴</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Quick Swipe</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/QuickSwipe.png" alt="QuickSwipe"></p>
+<ul>
+<li>Allow swipe start over me：是否允许从物体上开始滑动</li>
+</ul>
+<p>其他参数类似 Quick Pinch</p>
+</li>
+<li><p><strong>Quick Tap</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/QuickTap.png" alt="Quick"></p>
+<ul>
+<li>Action triggering：点击方式,包括单击双击</li>
+</ul>
+</li>
+<li><p><strong>Quick Touch</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/QuickTouch.png" alt="QuickTouch"></p>
+<ul>
+<li>Action triggering：触摸方式,包括开始,按下和抬起</li>
+</ul>
+</li>
+<li><p><strong>Quick Twist</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/QuickTwist.png" alt="QuickTwist"></p>
+<p>参数类似 Quick Pinch</p>
+</li>
+<li><p><strong>Easy Touch Trigger</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/QuickComponent/Trigger.png" alt="Trigger"></p>
+<ul>
+<li>Testing on：作用对象是 UI 还是 3D 物体</li>
+<li>Only if on me：只有点击到当前物体时才会触发事件</li>
+<li>All the time，or other object：点击到其他物体，或者指定的物体时，也可触发</li>
+<li>Other receiver：其他接收者。即：当该物体触发事件后，要求 Receiver 做 Receiver 身上的 Method</li>
+</ul>
+</li>
+</ol>
+<h3 id="EasyTouch-Controls"><a href="#EasyTouch-Controls" class="headerlink" title="EasyTouch Controls"></a>EasyTouch Controls</h3><p>Hierarchy 窗口空白处右键添加 Controls<br><img src="/../img/UnityInputSystemBlog/EasyTouch/Controls/NewContorls.png" alt="NewControl"></p>
+<h4 id="InputManager"><a href="#InputManager" class="headerlink" title="InputManager"></a>InputManager</h4><p>InputManager 是 EasyTouch 控制器的一个核心概念，它用于管理虚拟控制器的输入。可以创建多个 InputManager 实例，并为每个实例配置不同的控制器类型。每个 InputManager 都可以拥有一个或多个虚拟控制器，这些控制器可以在不同的游戏场景或不同的控制方案中使用。</p>
+<h4 id="Joystick"><a href="#Joystick" class="headerlink" title="Joystick"></a>Joystick</h4><p>Joystick（摇杆）是一种常用的虚拟控制器，用于模拟传统游戏手柄上的摇杆。它通常由两个部分组成：底座（Base）和 Thumb（拇指触摸部分）。玩家可以通过触摸并移动 Thumb 来控制游戏中的角色或摄像机等。</p>
+<p>底座：是 Joystick 的固定部分，玩家不能直接与其互动。<br>Thumb：玩家可以通过触摸并移动 Thumb 来控制游戏中的角色或摄像机等。<br>在 EasyTouch 中，你可以配置 Joystick 的各种属性，如：</p>
+<ol>
+<li><p><strong>主参数</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/Controls/JoystickMain.png" alt="JoystickMain"></p>
+<ul>
+<li>Activated : 是否激活</li>
+<li>Visible : 是否可见,不可见也就不能使用</li>
+<li>Use Fixed Update : 是否加入帧更新,适用物理控制</li>
+<li>Unregister at disabling time : 禁用时取消已经注册的事件</li>
+</ul>
+</li>
+<li><p><strong>Position &amp; Size</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/Controls/JoystickPos&Size.png" alt="JoystickPos&amp;Size"></p>
+<ul>
+<li>Type:摇杆的类型,包括 Static 和 Dynamic,静态遥感位置固定,动态摇杆生成在第一次点击屏幕的位置,动态摇杆可以控制可生成区域,也可自定义区域(使用 Controls 中的 Area)</li>
+<li>Anchor:锚点设置,本质上就是 UI 元素,<strong>建议不要直接使用 Rect Transform 设置,存在某种 Bug,可以先使用提供的设置调到大概位置,再修改 Anchor 为 User Define,再在 Scene 中微调</strong></li>
+<li>No offset thumb: 是否开启遥感偏移,关闭时鼠标点哪里,遥感就那个位置跟随,开启后遥感自动将位置移到鼠标对应遥感中心</li>
+<li>No return of the thumb: 是否放回遥感位置,即松开时摇杆是否归位</li>
+<li>Background size:背景图片大小</li>
+<li>Thumb size: 遥感大小</li>
+<li>Radius based on: 半径基于宽度还是高度,或者自定义</li>
+</ul>
+</li>
+<li><p><strong>Axes properties</strong></p>
+<p><img src="/../img/UnityInputSystemBlog/EasyTouch/Controls/JoystickAxes.png" alt="JoystickAxes"></p>
+<ul>
+<li>Turn &amp; Move direction Action：开启可以直接以第三人称控制移动和旋转</li>
+<li>Horizontal axis: 轴输入名称,惟一</li>
+<li>General setting<ul>
+<li>React on : 触发方式点击或按下</li>
+<li>Dead zone method: 死区控制方式,传统或线性</li>
+<li>Dead length:死去范围</li>
+<li>Inverted axis:反转轴</li>
+<li>On&#x2F;Off Threshold:开&#x2F;关阈值,该值用于确定轴第一次被认为向下的阈值。使用此值，如果你想管理你的轴模式开&#x2F;关，或基础上的直接行动向下轴。</li>
+<li>Speed: 控制的速度</li>
+</ul>
+</li>
+<li>Direction action(optional)<ul>
+<li>Auto link on tag : 根据 tag 自动连接</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="Other-Controls"><a href="#Other-Controls" class="headerlink" title="Other Controls"></a>Other Controls</h4><p>其他控件如 D-Pad,Button,TouchPad,Area 参数上都和 Joystick 相差不大,详情可在文档<strong>EasyTouchControls_UserDocumentation.pdf</strong>中查看.</p>
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>EasyTouch 插件大大简化了触摸输入的处理，使开发者能够更加专注于游戏的核心玩法和用户体验，而不是陷入底层触摸事件的细节处理中。如果你正在开发一款需要复杂触摸控制的移动游戏，EasyTouch 绝对是一个值得考虑的强大工具。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Ank</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/07/18/Unity%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/">http://example.com/2024/07/18/Unity%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F%E5%9F%BA%E7%A1%80/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">Ank_Blogging</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/unity/">unity</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/07/19/ScreenToWorldPoint%E4%BB%8E%E5%B1%8F%E5%B9%95%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2%E5%88%B0%E4%B8%96%E7%95%8C%E5%9D%90%E6%A0%87%E7%B3%BB/" title="ScreenToWorldPoint从屏幕坐标系转换到世界坐标系"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">ScreenToWorldPoint从屏幕坐标系转换到世界坐标系</div></div><div class="info-2"><div class="info-item-1">最终代码private void OnMouseDrag()&#123;    Vector3 mousePos = Input.mousePosition;    mousePos.z = camera.WorldToScreenPoint(transform.position).z;    Vector3 pos = Camera.main.ScreenToWorldPoint(mousePos);    transform.position = pos;&#125;  问题描述测试鼠标事件 OnMouseDrag()时,想让鼠标拖着游戏物体移动,最开始使用代码 private void OnMouseDrag()&#123;    transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);&#125;  发现物体不见了,检查发现 Cube 位置变为了(0,1,-10) 分别输出 Input.mousePosition 和转换后的 Camera.main.ScreenToWorldPoin...</div></div></div></a><a class="pagination-related" href="/2024/07/06/Unity-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Unity 资源管理基础知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Unity 资源管理基础知识</div></div><div class="info-2"><div class="info-item-1">各类型资源以及导入面板相关参数Unity 是一款强大的跨平台游戏开发引擎，它支持多种类型的资源，这些资源可以被用于构建游戏场景、动画、交互以及音效等。以下是一些常见的 Unity 资源类型及其用途： 纹理和图像 (Textures and Images)包括 BMP, TIF, TGA, JPG, PNG, PSD 等格式，用于材质、UI 元素或贴图。Inspector 面板: Texture Type  Default: 这是用于所有纹理的最常用设置。此选项可用于访问大多数纹理导入属性。  Normal map: 选择此选项可将颜色通道转换为适合实时法线贴图的格式。  Editor GUI and Legacy GUI: 在任何 HUD 或 GUI 控件上使用纹理.  Sprite(2D and UI): 在 2D 游戏中使用该纹理作为精灵.  Cursor: 将纹理用作自定义游标.  Cookie: 此选项可通过基本参数来设置纹理，从而将其用于场景光源的剪影.  光照贴图(Light map): 允许将纹理编码为特定格式（RGBM 或 dLDR，具体取决于平台）并通过后期处理...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/07/06/Unity-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="Unity 资源管理基础知识"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-06</div><div class="info-item-2">Unity 资源管理基础知识</div></div><div class="info-2"><div class="info-item-1">各类型资源以及导入面板相关参数Unity 是一款强大的跨平台游戏开发引擎，它支持多种类型的资源，这些资源可以被用于构建游戏场景、动画、交互以及音效等。以下是一些常见的 Unity 资源类型及其用途： 纹理和图像 (Textures and Images)包括 BMP, TIF, TGA, JPG, PNG, PSD 等格式，用于材质、UI 元素或贴图。Inspector 面板: Texture Type  Default: 这是用于所有纹理的最常用设置。此选项可用于访问大多数纹理导入属性。  Normal map: 选择此选项可将颜色通道转换为适合实时法线贴图的格式。  Editor GUI and Legacy GUI: 在任何 HUD 或 GUI 控件上使用纹理.  Sprite(2D and UI): 在 2D 游戏中使用该纹理作为精灵.  Cursor: 将纹理用作自定义游标.  Cookie: 此选项可通过基本参数来设置纹理，从而将其用于场景光源的剪影.  光照贴图(Light map): 允许将纹理编码为特定格式（RGBM 或 dLDR，具体取决于平台）并通过后期处理...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Ank</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%BE%93%E5%85%A5"><span class="toc-number">1.</span> <span class="toc-text">输入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%8F%E5%85%B8%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.</span> <span class="toc-text">经典输入系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%B0%E7%9A%84%E8%BE%93%E5%85%A5%E7%B3%BB%E7%BB%9F%EF%BC%88Input-System-package%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">新的输入系统（Input System package）</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%BC%A0%E6%A0%87%E8%BE%93%E5%85%A5"><span class="toc-number">2.</span> <span class="toc-text">鼠标输入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BC%A0%E6%A0%87%E6%8C%89%E9%92%AE"><span class="toc-number">2.1.</span> <span class="toc-text">鼠标按钮</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BC%A0%E6%A0%87%E4%BD%8D%E7%BD%AE"><span class="toc-number">2.2.</span> <span class="toc-text">鼠标位置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BC%A0%E6%A0%87%E6%BB%9A%E5%8A%A8"><span class="toc-number">2.3.</span> <span class="toc-text">鼠标滚动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BC%A0%E6%A0%87%E7%A7%BB%E5%8A%A8"><span class="toc-number">2.4.</span> <span class="toc-text">鼠标移动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6"><span class="toc-number">2.5.</span> <span class="toc-text">鼠标事件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%94%AE%E7%9B%98%E8%BE%93%E5%85%A5"><span class="toc-number">3.</span> <span class="toc-text">键盘输入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E4%BA%8B%E4%BB%B6%E7%9A%84%E8%BE%93%E5%85%A5"><span class="toc-number">3.1.</span> <span class="toc-text">基于事件的输入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E8%BD%B4%E7%9A%84%E8%BE%93%E5%85%A5"><span class="toc-number">3.2.</span> <span class="toc-text">基于轴的输入</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Touch-%E8%BE%93%E5%85%A5"><span class="toc-number">4.</span> <span class="toc-text">Touch 输入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Input-touches-%E6%95%B0%E7%BB%84"><span class="toc-number">4.1.</span> <span class="toc-text">Input.touches 数组</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-Touch-%E8%BE%93%E5%85%A5%E6%8B%96%E5%8A%A8%E7%89%A9%E4%BD%93"><span class="toc-number">4.2.</span> <span class="toc-text">使用 Touch 输入拖动物体</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6%E6%A8%A1%E6%8B%9F%E5%8D%95%E4%B8%AA-touch"><span class="toc-number">4.3.</span> <span class="toc-text">鼠标事件模拟单个 touch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A6%E6%91%B8%E4%BA%8B%E4%BB%B6%E5%92%8C%E9%BC%A0%E6%A0%87%E4%BA%8B%E4%BB%B6%E5%AF%B9%E6%AF%94"><span class="toc-number">4.4.</span> <span class="toc-text">触摸事件和鼠标事件对比</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%99%80%E8%9E%BA%E4%BB%AA%E8%BE%93%E5%85%A5"><span class="toc-number">5.</span> <span class="toc-text">陀螺仪输入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Input-gyro-%E5%B1%9E%E6%80%A7"><span class="toc-number">5.1.</span> <span class="toc-text">Input.gyro 属性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E6%9F%A5%E8%AE%BE%E5%A4%87%E6%94%AF%E6%8C%81"><span class="toc-number">5.2.</span> <span class="toc-text">检查设备支持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%90%AF%E7%94%A8%E9%99%80%E8%9E%BA%E4%BB%AA"><span class="toc-number">5.3.</span> <span class="toc-text">启用陀螺仪</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E9%99%80%E8%9E%BA%E4%BB%AA%E6%95%B0%E6%8D%AE"><span class="toc-number">5.4.</span> <span class="toc-text">获取陀螺仪数据</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E9%A2%91%E7%8E%87"><span class="toc-number">5.5.</span> <span class="toc-text">更新频率</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="toc-number">5.6.</span> <span class="toc-text">示例代码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#EasyTouch"><span class="toc-number">6.</span> <span class="toc-text">EasyTouch</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#EasyTouch-%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">6.1.</span> <span class="toc-text">EasyTouch 的特点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-EasyTouch-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%AD%A5%E9%AA%A4"><span class="toc-number">6.2.</span> <span class="toc-text">使用 EasyTouch 的基本步骤</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Easy-Touch-Script-%E7%BB%84%E4%BB%B6"><span class="toc-number">6.3.</span> <span class="toc-text">Easy Touch(Script) 组件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#GUI-compatibility"><span class="toc-number">6.3.1.</span> <span class="toc-text">GUI compatibility</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Automatic-selection"><span class="toc-number">6.3.2.</span> <span class="toc-text">Automatic selection</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#General-gesture-properties"><span class="toc-number">6.3.3.</span> <span class="toc-text">General gesture properties</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Two-fingers-gesture-properties%E3%80%81"><span class="toc-number">6.3.4.</span> <span class="toc-text">Two fingers gesture properties、</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Second-finger-simulation"><span class="toc-number">6.3.5.</span> <span class="toc-text">Second finger simulation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E4%BD%BF%E7%94%A8%E6%96%B9%E5%BC%8F"><span class="toc-number">6.4.</span> <span class="toc-text">三种使用方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-API"><span class="toc-number">6.4.1.</span> <span class="toc-text">使用 API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Quick-Component"><span class="toc-number">6.4.2.</span> <span class="toc-text">Quick Component</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#EasyTouch-Controls"><span class="toc-number">6.4.3.</span> <span class="toc-text">EasyTouch Controls</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#InputManager"><span class="toc-number">6.4.3.1.</span> <span class="toc-text">InputManager</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Joystick"><span class="toc-number">6.4.3.2.</span> <span class="toc-text">Joystick</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Other-Controls"><span class="toc-number">6.4.3.3.</span> <span class="toc-text">Other Controls</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E8%AF%AD"><span class="toc-number">6.4.4.</span> <span class="toc-text">结语</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/25/%E5%90%88%E6%89%B9%E5%92%8CUI%E5%9B%BE%E9%9B%86/" title="合批和UI图集">合批和UI图集</a><time datetime="2025-05-25T09:37:08.000Z" title="发表于 2025-05-25 17:37:08">2025-05-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/16/Unity%E8%B0%83%E8%AF%95/" title="Unity调试">Unity调试</a><time datetime="2025-05-16T02:30:42.000Z" title="发表于 2025-05-16 10:30:42">2025-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/08/%E7%BD%91%E6%A0%BC%EF%BC%8C%E7%BA%B9%E7%90%86%EF%BC%8C%E7%9D%80%E8%89%B2%E5%99%A8%E5%92%8C%E6%9D%90%E8%B4%A8/" title="网格，纹理，着色器和材质">网格，纹理，着色器和材质</a><time datetime="2024-08-08T07:42:02.000Z" title="发表于 2024-08-08 15:42:02">2024-08-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/01/Unity%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" title="Unity渲染管线">Unity渲染管线</a><time datetime="2024-08-01T08:03:52.000Z" title="发表于 2024-08-01 16:03:52">2024-08-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/30/UGUI%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="UGUI基础知识">UGUI基础知识</a><time datetime="2024-07-30T02:14:26.000Z" title="发表于 2024-07-30 10:14:26">2024-07-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Ank</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.2.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>UGUI基础知识 | Ank_Blogging</title><meta name="author" content="Ank"><meta name="copyright" content="Ank"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Unity UI（用户界面）是 Unity 引擎中用于创建游戏和应用中的交互式界面的系统。它允许开发者设计、构建和管理 2D 和 3D 游戏内的菜单、HUD（抬头显示）、按钮、滑块、文本框等元素。 Unity UI 的主要组成部分Canvas（画布）Canvas 是所有 UI 元素的容器。你可以有多个 Canvas，每个 Canvas 可以有自己的渲染模式（Screen Space-Overlay">
+<meta property="og:type" content="article">
+<meta property="og:title" content="UGUI基础知识">
+<meta property="og:url" content="http://example.com/2024/07/30/UGUI%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:site_name" content="Ank_Blogging">
+<meta property="og:description" content="Unity UI（用户界面）是 Unity 引擎中用于创建游戏和应用中的交互式界面的系统。它允许开发者设计、构建和管理 2D 和 3D 游戏内的菜单、HUD（抬头显示）、按钮、滑块、文本框等元素。 Unity UI 的主要组成部分Canvas（画布）Canvas 是所有 UI 元素的容器。你可以有多个 Canvas，每个 Canvas 可以有自己的渲染模式（Screen Space-Overlay">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/butterfly-icon.png">
+<meta property="article:published_time" content="2024-07-30T02:14:26.000Z">
+<meta property="article:modified_time" content="2024-08-01T07:46:26.000Z">
+<meta property="article:author" content="Ank">
+<meta property="article:tag" content="Unity">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "UGUI基础知识",
+  "url": "http://example.com/2024/07/30/UGUI%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/",
+  "image": "http://example.com/img/butterfly-icon.png",
+  "datePublished": "2024-07-30T02:14:26.000Z",
+  "dateModified": "2024-08-01T07:46:26.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Ank",
+      "url": "http://example.com"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2024/07/30/UGUI%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'UGUI基础知识',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 7.2.0"><link rel="alternate" href="/atom.xml" title="Ank_Blogging" type="application/atom+xml">
+</head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Ank_Blogging</span></a><a class="nav-page-title" href="/"><span class="site-name">UGUI基础知识</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">UGUI基础知识</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-30T02:14:26.000Z" title="发表于 2024-07-30 10:14:26">2024-07-30</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-01T07:46:26.000Z" title="更新于 2024-08-01 15:46:26">2024-08-01</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>Unity UI（用户界面）是 Unity 引擎中用于创建游戏和应用中的交互式界面的系统。它允许开发者设计、构建和管理 2D 和 3D 游戏内的菜单、HUD（抬头显示）、按钮、滑块、文本框等元素。</p>
+<h1 id="Unity-UI-的主要组成部分"><a href="#Unity-UI-的主要组成部分" class="headerlink" title="Unity UI 的主要组成部分"></a>Unity UI 的主要组成部分</h1><h2 id="Canvas（画布）"><a href="#Canvas（画布）" class="headerlink" title="Canvas（画布）"></a>Canvas（画布）</h2><p>Canvas 是所有 UI 元素的容器。你可以有多个 Canvas，每个 Canvas 可以有自己的渲染模式（Screen Space-Overlay, Screen Space-Camera 或 World Space）和相机设置。画布 使用 <strong>EventSystem</strong> 对象来协助消息系统。</p>
+<h3 id="元素绘制顺序"><a href="#元素绘制顺序" class="headerlink" title="元素绘制顺序"></a>元素绘制顺序</h3><p>画布中的 UI 元素按照它们在 Hierarchy 中显示的顺序绘制。如果两个 UI 元素重叠，则后一个元素将显示在前一个元素之上。</p>
+<p>要更改元素的显示顺序，只需在 Hierarchy 中拖动元素进行重新排序。也可以通过在变换组件上使用以下方法从脚本控制顺序：SetAsFirstSibling、SetAsLastSibling 和 SetSiblingIndex。</p>
+<h3 id="渲染模式"><a href="#渲染模式" class="headerlink" title="渲染模式"></a>渲染模式</h3><ul>
+<li>Screen Space-Overlay：UI 元素直接渲染到屏幕之上，不受到任何相机的影响。</li>
+<li>Screen Space-Camera：UI 元素相对于特定的相机进行渲染。</li>
+<li>World Space：UI 元素作为场景中的 3D 对象存在，可以被任何相机渲染。</li>
+</ul>
+<h3 id="组件参数"><a href="#组件参数" class="headerlink" title="组件参数"></a>组件参数</h3><h4 id="Canvas"><a href="#Canvas" class="headerlink" title="Canvas"></a>Canvas</h4><p><img src="/../img/UGUIBasic/Canvas.png" alt="Canvas"></p>
+<ul>
+<li>Pixel Perfect（仅限 Screen Space 模式） 是否应该无锯齿精确渲染 UI？</li>
+<li>Render Camera（仅限 Screen Space - Camera 模式） 应该将 UI 渲染到的摄像机。</li>
+<li>Plane Distance（仅限 Screen Space - Camera 模式） UI 平面在摄像机前方的距离。</li>
+<li>Event Camera（仅限 World Space 模式） 用于处理 UI 事件的摄像机。</li>
+</ul>
+<h4 id="Canvas-Scaler"><a href="#Canvas-Scaler" class="headerlink" title="Canvas Scaler"></a>Canvas Scaler</h4><p><img src="/../img/UGUIBasic/CanvasScaler.png" alt="CanvasScaler"></p>
+<ul>
+<li>UI Scale Mode 确定画布中的 UI 元素的缩放方式。<ul>
+<li>Constant Pixel Size UI 元素都保持相同的像素大小。</li>
+<li>Scale With Screen Size 跟随屏幕大小缩放。</li>
+<li>Constant Physical Size UI 元素都保持相同的物理大小。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><p><strong>Constant Pixel Size</strong><br><img src="/../img/UGUIBasic/Constant%20Pixel%20Size.png" alt="ConstantPixelSize"></p>
+<ul>
+<li>Scale Factor 按此系数缩放画布中的所有 UI 元素。</li>
+<li>Reference Pixels Per Unit 如果精灵具有此“Pixels Per Unit”设置，则精灵中的每个像素将覆盖 UI 中的一个单位。</li>
+</ul>
+</li>
+<li><p><strong>Scale With Screen Size</strong><br><img src="/../img/UGUIBasic/Scale%20With%20Screen%20Size.png" alt="ScaleWithScreenSize"></p>
+<ul>
+<li>Reference Resolution UI 布局设计的目标分辨率。如果屏幕分辨率较大，则 UI 会放大，如果较小，则 UI 会缩小。</li>
+<li>Screen Match Mode 在当前分辨率的宽高比不适应参考分辨率时，用于缩放画布区域的模式。<ul>
+<li>Match Width or Height 以宽度、高度或二者的某种平均值作为参考来缩放画布区域。</li>
+<li>Expand 水平或垂直扩展画布区域，使画布不会小于参考。</li>
+<li>Shrink 水平或垂直裁剪画布区域，使画布不会大于参考。</li>
+</ul>
+</li>
+<li>Match 确定是否以宽度、高度或二者的某种平均值作为参考进行缩放。</li>
+<li>Reference Pixels Per Unit 如果精灵具有此“Pixels Per Unit”设置，则精灵中的每个像素将覆盖 UI 中的一个单位。</li>
+</ul>
+</li>
+<li><p><strong>Constant Physical Size</strong><br><img src="/../img/UGUIBasic/Constant%20Physical%20Size.png" alt="ConstantPhysicalSize"></p>
+</li>
+</ol>
+<h4 id="Canvas-Group"><a href="#Canvas-Group" class="headerlink" title="Canvas Group"></a>Canvas Group</h4><p><img src="/../img/UGUIBasic/CanvasGroup.png" alt="CanvasGroup"></p>
+<ul>
+<li>Alpha 此组中的 UI 元素的不透明度。该值介于 0 和 1 之间，其中 0 表示完全透明，1 表示完全不透明。注意，UI 元素也会保留自己的透明度，因此画布组的 Alpha 值将与各个元素的 Alpha 值彼此相乘。</li>
+<li>Interactable 确定此组件是否接受输入。当设置为 false 时，禁用交互。</li>
+<li>Block Raycasts 此组件是否作为射线投射的碰撞体？需要在连接到画布的图形射线投射器上调用 RayCast 函数。这<em>不适用</em>于 Physics.Raycast。</li>
+<li>Ignore Parent Groups 此组还会受到游戏对象层级视图中更上层的画布组 (Canvas Group) 组件中的设置所影响，还是会忽略并因此覆盖这些设置？</li>
+</ul>
+<p><strong>画布组的典型用途为：</strong></p>
+<ul>
+<li>通过在窗口的游戏对象上添加画布组并控制其 Alpha 属性来淡入或淡出整个窗口。</li>
+<li>通过将画布组添加到父游戏对象并将其 Interactable 属性设置为 false 来使整组控件不可交互（“灰显”）。</li>
+<li>通过在 UI 元素或其某个父元素上放置画布组 (Canvas Group) 组件并将其 Block Raycasts 属性设置为 false 来使一个或多个 UI 元素不阻止鼠标事件。</li>
+</ul>
+<h4 id="Canvas-Renderer-画布渲染器"><a href="#Canvas-Renderer-画布渲染器" class="headerlink" title="Canvas Renderer(画布渲染器)"></a>Canvas Renderer(画布渲染器)</h4><p>**画布渲染器 (Canvas Renderer)**组件用于渲染画布中包含的图形 UI 对象。</p>
+<h2 id="UI-控件"><a href="#UI-控件" class="headerlink" title="UI 控件"></a>UI 控件</h2><p>Unity UI 提供了一系列预定义的控件，如 Button（按钮）、Text（文本）、Image（图像）、Slider（滑动条）、Toggle（切换开关）、Scrollbar（滚动条）、ScrollView(滚动视图)、InputFiled(输入框)、Dropdown (下拉框)等。</p>
+<h2 id="Layout（布局）"><a href="#Layout（布局）" class="headerlink" title="Layout（布局）"></a>Layout（布局）</h2><p>Unity UI 支持多种布局方式，如 Horizontal Layout Group（水平布局组）、Vertical Layout Group（垂直布局组）、Grid Layout Group（网格布局组），帮助自动排列 UI 元素。</p>
+<p>在 Content 上添加 Content Size Fitter 和 Grid Layout Group,配置好参数就可以实现 ScrollView 的动态添加 Item.</p>
+<h2 id="Mask（遮罩）"><a href="#Mask（遮罩）" class="headerlink" title="Mask（遮罩）"></a>Mask（遮罩）</h2><p>Mask 可以用来限制 UI 元素的显示区域。<br><img src="/../img/UGUIBasic/Mask.png" alt="Mask"></p>
+<ul>
+<li>Show Mask Graphic: 在子对象上使用 Alpha 绘制遮罩（父）对象的图形</li>
+</ul>
+<p>遮罩的常见用法是使用面板 (Panel) 对象作为“框架”显示大型图像的一小部分。为实现此目的，可先将图像设置为面板对象的子项。应调整图像的位置，使应该可见的区域直接位于面板区域的后面。然后，将一个遮罩组件添加到面板。面板外面的子图像区域将变得不可见，因为这些区域被面板的形状所掩盖。</p>
+<p><strong>RectMask2D</strong><br>RectMask2D 是一个类似于<strong>遮罩 (Mask)</strong> 控件的遮罩控件。遮罩将子元素限制为父元素的矩形。与标准的遮罩控件不同，这种控件有一些限制，但也有许多性能优势。</p>
+<h2 id="Event-System（事件系统）"><a href="#Event-System（事件系统）" class="headerlink" title="Event System（事件系统）"></a>Event System（事件系统）</h2><p>用于处理用户输入，如鼠标点击或触摸屏幕，以及发送事件到 UI 元素。</p>
+<h2 id="Raycast-Target（射线目标）"><a href="#Raycast-Target（射线目标）" class="headerlink" title="Raycast Target（射线目标）"></a>Raycast Target（射线目标）</h2><p>UI 元素是否接受射线投射的属性，这对于响应用户的输入很重要。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">Ank</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/07/30/UGUI%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/">http://example.com/2024/07/30/UGUI%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="http://example.com" target="_blank">Ank_Blogging</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Unity/">Unity</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/08/01/Unity%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" title="Unity渲染管线"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Unity渲染管线</div></div><div class="info-2"><div class="info-item-1">渲染管线简介渲染管线是计算机图形学中用于将 3D 模型转换为 2D 图像的一系列处理步骤。这个过程从读取 3D 模型的数据开始，一直到将最终的像素颜色输出到屏幕上结束。概括来说，这些操作如下：  剔除 渲染 后期处理  这里把他们详细的分为几个阶段：  应用阶段（Application Stage）  在这一阶段，开发者通过编程控制模型的变换、材质和光照设置。 这里通常涉及到模型、视图和投影矩阵的设置，用于控制物体在世界中的位置、方向和大小，以及摄像机的位置和视角。   顶点着色（Vertex Shading）  顶点着色器接收原始顶点数据，执行一系列数学运算，如模型变换、光照计算等，来准备顶点供下一步处理。 这一步骤也常用于处理动画、皮肤和骨骼绑定。   光栅化（Rasterization）  光栅化阶段将 3D 空间中的多边形转换为 2D 屏幕上的像素。 这个过程中，每个多边形被分解成像素，然后这些像素被着色。   片段着色（Fragment Shading）  片段着色器（也称为像素着色器）为每个像素计算最终颜色，包括光照、纹理贴图、阴影和透明度等效果。 这一步骤负责产生最...</div></div></div></a><a class="pagination-related" href="/2024/07/19/ScreenToWorldPoint%E4%BB%8E%E5%B1%8F%E5%B9%95%E5%9D%90%E6%A0%87%E7%B3%BB%E8%BD%AC%E6%8D%A2%E5%88%B0%E4%B8%96%E7%95%8C%E5%9D%90%E6%A0%87%E7%B3%BB/" title="ScreenToWorldPoint从屏幕坐标系转换到世界坐标系"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">ScreenToWorldPoint从屏幕坐标系转换到世界坐标系</div></div><div class="info-2"><div class="info-item-1">最终代码private void OnMouseDrag()&#123;    Vector3 mousePos = Input.mousePosition;    mousePos.z = camera.WorldToScreenPoint(transform.position).z;    Vector3 pos = Camera.main.ScreenToWorldPoint(mousePos);    transform.position = pos;&#125;  问题描述测试鼠标事件 OnMouseDrag()时,想让鼠标拖着游戏物体移动,最开始使用代码 private void OnMouseDrag()&#123;    transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);&#125;  发现物体不见了,检查发现 Cube 位置变为了(0,1,-10) 分别输出 Input.mousePosition 和转换后的 Camera.main.ScreenToWorldPoin...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/08/01/Unity%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" title="Unity渲染管线"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-01</div><div class="info-item-2">Unity渲染管线</div></div><div class="info-2"><div class="info-item-1">渲染管线简介渲染管线是计算机图形学中用于将 3D 模型转换为 2D 图像的一系列处理步骤。这个过程从读取 3D 模型的数据开始，一直到将最终的像素颜色输出到屏幕上结束。概括来说，这些操作如下：  剔除 渲染 后期处理  这里把他们详细的分为几个阶段：  应用阶段（Application Stage）  在这一阶段，开发者通过编程控制模型的变换、材质和光照设置。 这里通常涉及到模型、视图和投影矩阵的设置，用于控制物体在世界中的位置、方向和大小，以及摄像机的位置和视角。   顶点着色（Vertex Shading）  顶点着色器接收原始顶点数据，执行一系列数学运算，如模型变换、光照计算等，来准备顶点供下一步处理。 这一步骤也常用于处理动画、皮肤和骨骼绑定。   光栅化（Rasterization）  光栅化阶段将 3D 空间中的多边形转换为 2D 屏幕上的像素。 这个过程中，每个多边形被分解成像素，然后这些像素被着色。   片段着色（Fragment Shading）  片段着色器（也称为像素着色器）为每个像素计算最终颜色，包括光照、纹理贴图、阴影和透明度等效果。 这一步骤负责产生最...</div></div></div></a><a class="pagination-related no-desc" href="/2025/05/16/Unity%E8%B0%83%E8%AF%95/" title="Unity调试"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-16</div><div class="info-item-2">Unity调试</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Ank</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Unity-UI-%E7%9A%84%E4%B8%BB%E8%A6%81%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="toc-number">1.</span> <span class="toc-text">Unity UI 的主要组成部分</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Canvas%EF%BC%88%E7%94%BB%E5%B8%83%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">Canvas（画布）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E7%B4%A0%E7%BB%98%E5%88%B6%E9%A1%BA%E5%BA%8F"><span class="toc-number">1.1.1.</span> <span class="toc-text">元素绘制顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.1.2.</span> <span class="toc-text">渲染模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%84%E4%BB%B6%E5%8F%82%E6%95%B0"><span class="toc-number">1.1.3.</span> <span class="toc-text">组件参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Canvas"><span class="toc-number">1.1.3.1.</span> <span class="toc-text">Canvas</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Canvas-Scaler"><span class="toc-number">1.1.3.2.</span> <span class="toc-text">Canvas Scaler</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Canvas-Group"><span class="toc-number">1.1.3.3.</span> <span class="toc-text">Canvas Group</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Canvas-Renderer-%E7%94%BB%E5%B8%83%E6%B8%B2%E6%9F%93%E5%99%A8"><span class="toc-number">1.1.3.4.</span> <span class="toc-text">Canvas Renderer(画布渲染器)</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#UI-%E6%8E%A7%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">UI 控件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Layout%EF%BC%88%E5%B8%83%E5%B1%80%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">Layout（布局）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Mask%EF%BC%88%E9%81%AE%E7%BD%A9%EF%BC%89"><span class="toc-number">1.4.</span> <span class="toc-text">Mask（遮罩）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Event-System%EF%BC%88%E4%BA%8B%E4%BB%B6%E7%B3%BB%E7%BB%9F%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">Event System（事件系统）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Raycast-Target%EF%BC%88%E5%B0%84%E7%BA%BF%E7%9B%AE%E6%A0%87%EF%BC%89"><span class="toc-number">1.6.</span> <span class="toc-text">Raycast Target（射线目标）</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/25/%E5%90%88%E6%89%B9%E5%92%8CUI%E5%9B%BE%E9%9B%86/" title="合批和UI图集">合批和UI图集</a><time datetime="2025-05-25T09:37:08.000Z" title="发表于 2025-05-25 17:37:08">2025-05-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/16/Unity%E8%B0%83%E8%AF%95/" title="Unity调试">Unity调试</a><time datetime="2025-05-16T02:30:42.000Z" title="发表于 2025-05-16 10:30:42">2025-05-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/08/%E7%BD%91%E6%A0%BC%EF%BC%8C%E7%BA%B9%E7%90%86%EF%BC%8C%E7%9D%80%E8%89%B2%E5%99%A8%E5%92%8C%E6%9D%90%E8%B4%A8/" title="网格，纹理，着色器和材质">网格，纹理，着色器和材质</a><time datetime="2024-08-08T07:42:02.000Z" title="发表于 2024-08-08 15:42:02">2024-08-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/01/Unity%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/" title="Unity渲染管线">Unity渲染管线</a><time datetime="2024-08-01T08:03:52.000Z" title="发表于 2024-08-01 16:03:52">2024-08-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/07/30/UGUI%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86/" title="UGUI基础知识">UGUI基础知识</a><time datetime="2024-07-30T02:14:26.000Z" title="发表于 2024-07-30 10:14:26">2024-07-30</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 By Ank</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 7.2.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.4.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
